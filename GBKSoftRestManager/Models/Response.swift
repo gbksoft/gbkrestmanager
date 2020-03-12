@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct Response<Model>: Decodable where Model: Decodable {
-    let result: Model?
-    let pagination: Pagination?
+public struct Response<Model>: Decodable where Model: Decodable {
+    public let result: Model?
+    public let pagination: Pagination?
 
     private enum CodingKeys: String, CodingKey {
         case result
@@ -23,7 +23,7 @@ struct Response<Model>: Decodable where Model: Decodable {
         self.pagination = pagination
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         result = try container.decode(.result)
         pagination = try? container.nestedContainer(keyedBy: CodingKeys.self, forKey: .meta).decode(.pagination)

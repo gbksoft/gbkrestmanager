@@ -8,23 +8,23 @@
 
 import Foundation
 
-enum RestURL: String {
+open class Endpoint {
 
-    case root = "/"
+    let endpoint: String
+
+    public init(_ endpoint: String) {
+        self.endpoint = endpoint
+    }
 
     internal func path(baseURL: String, query: [String: Any]? = nil) -> URL {
 
-        var path = URLComponents(string: "http://google.com")!
+        var path = URLComponents(string: [baseURL, endpoint].joined(separator: "/"))!
 
         if let query = query {
             path.queryItems = queryItems(from: query)
         }
 
         return path.url!
-    }
-
-    public func endpoint() -> String {
-        return self.rawValue
     }
 
     private func queryItems(from query: [String: Any]) -> [URLQueryItem] {

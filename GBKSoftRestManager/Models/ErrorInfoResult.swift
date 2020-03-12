@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct ErrorInfoResult: Codable {
+public struct ErrorInfoResult: Codable {
     let result: [ErrorInfo]
 }
 
-struct ErrorInfo: Codable {
+public struct ErrorInfo: Codable {
     let field: String
     let message: String
     let code: Int

@@ -13,18 +13,17 @@ enum ExecutingState {
     case executionEnded
 }
 
-typealias ExecutionStateHandler = (ExecutingState) -> Void
-typealias AuthorisationHeaderSource = () -> String
+public typealias AuthorisationHeaderSource = () -> String
 
-struct Configuration {
+open class RestManagerConfiguration {
     private(set) var authorizationHeaderSource: AuthorisationHeaderSource = { return "" }
     private(set) var baseURL: String = ""
 
-    mutating func setAuthorisationHeaderSource(_ source: @escaping AuthorisationHeaderSource) {
+    public func setAuthorisationHeaderSource(_ source: @escaping AuthorisationHeaderSource) {
         self.authorizationHeaderSource = source
     }
 
-    mutating func setBaseURL(_ url: String) {
+    public func setBaseURL(_ url: String) {
         self.baseURL = url
     }
 }

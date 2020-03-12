@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum APIMethod: String {
+public enum APIMethod: String {
     case get = "GET"
     case post = "POST"
     case delete = "DELETE"
@@ -16,21 +16,38 @@ enum APIMethod: String {
     case patch = "PATCH"
 }
 
-struct Request {
-    let url: RestURL
-    let method: APIMethod
-    var query: [String: Any]?
-    var withAuthorization: Bool = false
-    var headers: [String: String]?
-    var body: Encodable?
-    var media: [String: RequestMedia]?
+public struct Request {
+    public let url: Endpoint
+    public let method: APIMethod
+    public var query: [String: Any]?
+    public var withAuthorization: Bool = false
+    public var headers: [String: String]?
+    public var body: Encodable?
+    public var media: [String: RequestMedia]?
+
+    public init(url: Endpoint,
+                method: APIMethod,
+                query: [String: Any]? = nil,
+                withAuthorization: Bool = false,
+                headers: [String: String]? = nil,
+        body: Encodable? = nil,
+        media: [String: RequestMedia]? = nil
+                ) {
+        self.url = url
+        self.method = method
+        self.query = query
+        self.withAuthorization = withAuthorization
+        self.headers = headers
+        self.body = body
+        self.media = media
+    }
 
     internal var finalURL: URL {
         return url.path(baseURL: RestManager.configuration.baseURL, query: query)
     }
 }
 
-enum RequestMedia {
+public enum RequestMedia {
     case png(UIImage)
     case jpg(UIImage)
     case mp4(URL)

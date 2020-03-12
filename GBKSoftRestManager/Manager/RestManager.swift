@@ -8,33 +8,30 @@
 
 import UIKit
 
-class RestManager: RestOperationsDelegate {
+open class RestManager: RestOperationsDelegate {
 
-    private(set) static var configuration: Configuration = Configuration()
+    public private(set) static var configuration: RestManagerConfiguration = RestManagerConfiguration()
     public static let shared = RestManager()
 
     private let executor = RequestExecutor()
 
     private var tasks: [String: [URLSessionTask]] = [:]
 
-    public func operations<T: RestOperations>(from operationsClass: T.Type, in context: UIViewController) -> T {
+    public func operationsManager<T: RestOperationsManager>(from operationsClass: T.Type, in context: UIViewController) -> T {
         let operations: T = operationsClass.init(contextIdentifier: context.restIdentifier)
         operations.delegate = self
         return operations
     }
 
-    public func operations<T: RestOperations>(from operationsClass: T.Type, in context: UIView) -> T {
+    public func operationsManager<T: RestOperationsManager>(from operationsClass: T.Type, in context: UIView) -> T {
         let operations: T = operationsClass.init(contextIdentifier: context.restIdentifier)
         operations.delegate = self
         return operations
     }
 
-    internal func execute<Model>(request: Request, identifier: String, completion: @escaping RequestCompletion<Model>) {
-        // request started
-        let task = executor.execute(request: request) { (result) in
-            // request ended
-            completion(result)
-        }
+    internal func execute<Model>(model: Model.Type, request: Request, identifier: String, completion: @escaping RequestCompletion<Model>) {
+
+        let task = executor.execute(request: request, completion: completion)
 
         if var existingTasks = tasks[identifier] {
             existingTasks.append(task)
@@ -48,6 +45,13 @@ class RestManager: RestOperationsDelegate {
 
     internal func cancelAllRequests(identifier: String) {
         tasks[identifier]?.forEach({$0.cancel()})
+        tasks.removeValue(forKey: identifier)
+    }
+
+    deinit {
+        tasks.forEach { (key, _) in
+            cancelAllRequests(identifier: key)
+        }
     }
 
 
