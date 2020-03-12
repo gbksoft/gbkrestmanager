@@ -96,8 +96,9 @@ enum RequestMedia {
 #### Request
 
 `Request` - базовый класс для формирования запросов 
+
 | Поле | Тип | Значение по умолчанию | Описание |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | url | `Endpoint` | - | относительный путь для запроса | 
 | method | `APIMethod` | - | метод запроса | 
 | query | `[String: Any]` | nil | данные для query части запроса. пример: `["sort": "asc", "page": 1, "tags": ["low", "medium"]]` в результате трансформируются в `?sort=asc&page=1&tags[]=low&tags[]=medium` |
