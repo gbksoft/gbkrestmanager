@@ -1,6 +1,6 @@
 //
 //  Encodable+Extension.swift
-//  Aquiline Drones
+//  GBKSoftRestManager
 //
 //  Created by Artem Korzh on 24.12.2019.
 //  Copyright © 2019 Artem Korzh. All rights reserved.

@@ -49,12 +49,30 @@ import GBKSoftRestManager
 ### Глобальная настройка
 
 ```swift
-RestManager.shared.configuration.setBaseURL("http://your.api.provider/api/v1") // set base url for a whole project
+// set base url for a whole project
+RestManager.shared.configuration.setBaseURL("http://your.api.provider/api/v1") 
 
+// return any string that will be used as value for Authorization header
 RestManager.shared.configuration.setAuthorisationHeaderSource { () -> String in
     // get token from storage/ 
-    return "Bearer \(token)" // return any string that will be used as value for Authorization header
+    return "Bearer \(token)" 
 }
+
+// set global handler for 401 error
+RestManager.shared.configuration.setUnauthorizedHandler { (error) in
+    print(error) // error is RestError
+    // TODO: logout user
+}
+
+// set default headers for all requests
+// except Accept and Content-Type that will be set automatically 
+RestManager.shared.configuration.setDefaultHeaders([
+    "Accept-Language": "en"
+])
+
+// update/set one default header for all requests
+// except Accept and Content-Type that will be set automatically 
+RestManager.shared.configuration.setDefaultHeader(header: "Accept-Language", value: "en")
 ```
 ### Основные классы 
 
@@ -88,7 +106,7 @@ enum APIMethod: String {
 enum RequestMedia {
     case png(UIImage)
     case jpg(UIImage)
-    case mp4(URL)
+    case mp4(URL) // path to local file on device
     case custom(fileURL: URL, contentType: String) // content type should be provided as "*/*", i.e. "application/pdf" 
 }
 ```
@@ -125,10 +143,48 @@ class RestOperationsManager {
 }
 ```
 
+
+
+#### APIError
+
+ошибка возвращаемая в RequestErrorHandler или onError функции 
+
+```swift
+public enum APIError: Error {
+    case unauthorized(error: RestError?)                        // if server returns 401 code
+    case executionError(error: Error)                           // if something crashed inbetween the client app and the server
+    case wrongResponseFormat                                    // if response returned by server not in json format or failed to decode into model
+    case emptyResponse                                          // if no body of request returned and code is not 204
+    case serverError(statusCode: Int, error: RestError?)        // if server returns 50_ code
+    case processingError(statusCode: Int, error: RestError?)    // if server failed to process request data. most of time RestError will contain non empty result: [ErrorInfo] 
+}
+```
+
+#### RestError
+
+```swift
+public struct RestError: Codable {
+    public let code: Int
+    public let status: Status       // .success or .error 
+    public let message: String?
+    public let result: [ErrorInfo]? 
+    public let name: String?
+}
+
+public struct ErrorInfo: Codable {
+    let field: String   // field failed validation
+    let message: String // validation error
+    let code: Int       // validation error code
+}
+```
+
 #### Response
 
 ```swift
 struct Response<Model>: Decodable where Model: Decodable {
+    public let code: Int
+    public let status: Status           // .success or .error
+    public let message: String?
     public let result: Model?
     public let pagination: Pagination?
 }
@@ -154,7 +210,12 @@ struct Response<Model>: Decodable where Model: Decodable {
 
         func uploadAvatar(image: UIImage) -> PreparedOperation<AvatarModel> {
             // post request with jpg image and authorization header
-            let request = Request(url: APIUser.avatar, method: .post, withAuthorization: true, media: ["file": .jpg(image)])
+            let request = Request(
+                url: APIUser.avatar, 
+                method: .post, 
+                withAuthorization: true, 
+                media: ["file": .jpg(image)]
+            )
             return prepare(request: request)
         }
     }
@@ -181,13 +242,15 @@ struct Response<Model>: Decodable where Model: Decodable {
         userOperationsManager.login(data: data)
             .onComplete { [weak self] (response) in
                 if let auth = response.result {
-                    RestManager.configuration.setAuthorisationHeaderSource { () -> String in
+                    // set received token as auth token for future requests
+                    // just for example. current realisation can cause memory leaks
+                    RestManager.shared.configuration.setAuthorisationHeaderSource { () -> String in
                         return "Bearer \(auth.token)"
                     }
                     self?.getProfile()
                     self?.updateAvatar()
                 }
-        }.execute()
+        }.run()
     }
     
     func getProfile() {
@@ -196,23 +259,28 @@ struct Response<Model>: Decodable where Model: Decodable {
                 if let user = response.result {
                     print(user)
                 }
-        }.execute()
+        }.run()
     }
 
     func updateAvatar() {
-        let image = UIImage(systemName: "star")!
+        let image = UIImage(systemName: "star")! // just for example
         userOperationsManager.uploadAvatar(image: image)
-            .onComplete { (response) in
-                if let avatar = response.result {
-                    print(avatar)
-                }
-        }.onStart { // local state handler 
-            print("upload started")
-        }.onEnd { // local state handler 
-            print("upload ended")
-        }.onError({ (error) in // local error handler 
+        .onComplete { (response) in
+            if let avatar = response.result {
+                print(avatar)
+            }
+        }.onStateChanged { (state) in        // local state handler. i.e. to toggle loading indicator
+            switch state {
+            case .started:
+                loader.show()
+            case .ended:
+                loader.hide()
+            }
+        }.onEnd {                                // local state handler 
+            updateUserAvatar()
+        }.onError({ (error) in                   // local error handler 
             print(error)
-        }).execute()
+        }).run()
     }
 ```
 

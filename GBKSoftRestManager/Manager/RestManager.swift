@@ -10,10 +10,10 @@ import UIKit
 
 open class RestManager: RestOperationsDelegate {
 
-    public private(set) static var configuration: RestManagerConfiguration = RestManagerConfiguration()
+    public private(set) var configuration: RestManagerConfiguration = RestManagerConfiguration()
     public static let shared = RestManager()
 
-    private let executor = RequestExecutor()
+    private lazy var executor = RequestExecutor(configuration: { self.configuration })
 
     private var tasks: [String: [URLSessionTask]] = [:]
 

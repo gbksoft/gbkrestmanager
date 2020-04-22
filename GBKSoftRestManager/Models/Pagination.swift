@@ -1,6 +1,6 @@
 //
 //  Pagination.swift
-//  Aquiline Drones
+//  GBKSoftRestManager
 //
 //  Created by Artem Korzh on 21.01.2020.
 //  Copyright © 2020 Artem Korzh. All rights reserved.

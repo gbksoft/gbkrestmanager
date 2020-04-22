@@ -1,6 +1,6 @@
 //
 //  RestURL.swift
-//  Aquiline Drones
+//  GBKSoftRestManager
 //
 //  Created by Artem Korzh on 24.12.2019.
 //  Copyright © 2019 Artem Korzh. All rights reserved.
@@ -17,13 +17,10 @@ open class Endpoint {
     }
 
     internal func path(baseURL: String, query: [String: Any]? = nil) -> URL {
-
         var path = URLComponents(string: [baseURL, endpoint].joined(separator: "/"))!
-
         if let query = query {
             path.queryItems = queryItems(from: query)
         }
-
         return path.url!
     }
 

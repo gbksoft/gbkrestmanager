@@ -1,6 +1,6 @@
 //
 //  RequestExecutor.swift
-//  Aquiline Drones
+//  GBKSoftRestManager
 //
 //  Created by Artem Korzh on 24.12.2019.
 //  Copyright © 2019 Artem Korzh. All rights reserved.
@@ -11,6 +11,12 @@ import Foundation
 typealias RequestCompletion<Model> = (Result<Response<Model>?, APIError>) -> Void where Model: Decodable
 
 class RequestExecutor {
+
+    public var currentConfiguration: () -> RestManagerConfiguration
+
+    init(configuration: @escaping () -> RestManagerConfiguration) {
+        self.currentConfiguration = configuration
+    }
 
     private let urlSession = URLSession(configuration: .default)
 
@@ -24,9 +30,11 @@ class RequestExecutor {
     }
 
     private func defaultTask<Model>(request: Request, completion: @escaping RequestCompletion<Model>) -> URLSessionTask where Model: Decodable {
-        var urlRequest = URLRequest(url: request.finalURL)
+        var urlRequest = URLRequest(url: request.finalURL(baseURL: currentConfiguration().baseURL))
         urlRequest.httpMethod = request.method.rawValue
-        urlRequest.allHTTPHeaderFields = request.headers
+        let customHeaders =  currentConfiguration().defaultHeaders
+            .merging(request.headers ?? [:], uniquingKeysWith: {(_, new) in new})
+        customHeaders.forEach({ urlRequest.setValue($1, forHTTPHeaderField: $0) })
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-type")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         if request.withAuthorization {
@@ -48,9 +56,11 @@ class RequestExecutor {
     }
 
     private func uploadTask<Model>(request: Request, completion: @escaping RequestCompletion<Model>) -> URLSessionTask where Model: Decodable {
-        var urlRequest = URLRequest(url: request.finalURL)
+        var urlRequest = URLRequest(url: request.finalURL(baseURL: currentConfiguration().baseURL))
         urlRequest.httpMethod = request.method.rawValue
-        urlRequest.allHTTPHeaderFields = request.headers
+        let customHeaders =  currentConfiguration().defaultHeaders
+            .merging(request.headers ?? [:], uniquingKeysWith: {(_, new) in new})
+        customHeaders.forEach({ urlRequest.setValue($1, forHTTPHeaderField: $0) })
         let boundary = "Boundary-\(UUID().uuidString)"
         urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-type")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -101,6 +111,11 @@ class RequestExecutor {
             return
         }
         if let httpResponse = response as? HTTPURLResponse {
+            var errorInfo: RestError?
+            if let data = data,
+                let info = try? JSONDecoder().decode(RestError.self, from: data) {
+                errorInfo = info
+            }
             switch httpResponse.statusCode {
             case 204:
                 if Model.self == Empty.self {
@@ -108,18 +123,17 @@ class RequestExecutor {
                     return
                 }
             case 401:
-                completion(.failure(.unauthorized))
+                if let handler = currentConfiguration().unauthorizedHandler {
+                    handler(errorInfo)
+                } else {
+                    completion(.failure(.unauthorized(error: errorInfo)))
+                }
                 return
             case 400, 402..<500:
-                var errorInfo: [ErrorInfo] = []
-                if let data = data,
-                    let info = try? JSONDecoder().decode(ErrorInfoResult.self, from: data) {
-                    errorInfo = info.result
-                }
-                completion(.failure(.processingError(code: httpResponse.statusCode, info: errorInfo)))
+                completion(.failure(.processingError(statusCode: httpResponse.statusCode, error: errorInfo)))
                 return
             case 500..<600:
-                completion(.failure(.serverError(code: httpResponse.statusCode)))
+                completion(.failure(.serverError(statusCode: httpResponse.statusCode, error: errorInfo)))
                 return
             default:
                 break
@@ -138,11 +152,10 @@ class RequestExecutor {
             debugPrint(error)
             completion(.failure(.wrongResponseFormat))
         }
-
     }
 
     private func getAuthHeader() -> String {
-        return RestManager.configuration.authorizationHeaderSource()
+        return currentConfiguration().authorizationHeaderSource()
     }
 
     private func printResponse(request: Request, urlRequest: URLRequest, data: Data?, response: URLResponse?, error: Error?) {

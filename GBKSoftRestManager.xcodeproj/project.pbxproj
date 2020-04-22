@@ -10,9 +10,10 @@
 		CE0B777723FE70BF0018CDA8 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B777623FE70BF0018CDA8 /* UIView+Extension.swift */; };
 		CE0B777A23FE70EC0018CDA8 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B777923FE70EC0018CDA8 /* UIViewController+Extension.swift */; };
 		CE0D3BB523F591C700567A7D /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0D3BB423F591C700567A7D /* Configuration.swift */; };
+		CE599A462449B80300B13ED3 /* RestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE599A452449B80300B13ED3 /* RestError.swift */; };
 		CE7C5D9F23F5689A001BC697 /* GBKSoftRestManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CE7C5D9D23F5689A001BC697 /* GBKSoftRestManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE7C5DA623F569B7001BC697 /* RequestExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C5DA523F569B7001BC697 /* RequestExecutor.swift */; };
-		CE7C5DA823F569C3001BC697 /* ErrorInfoResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C5DA723F569C3001BC697 /* ErrorInfoResult.swift */; };
+		CE7C5DA823F569C3001BC697 /* ErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C5DA723F569C3001BC697 /* ErrorInfo.swift */; };
 		CE7C5DAA23F569C6001BC697 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C5DA923F569C6001BC697 /* APIError.swift */; };
 		CE7C5DAC23F569D0001BC697 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C5DAB23F569D0001BC697 /* Request.swift */; };
 		CE7C5DAE23F569DC001BC697 /* RestURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C5DAD23F569DC001BC697 /* RestURL.swift */; };
@@ -31,12 +32,13 @@
 		CE0B777623FE70BF0018CDA8 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		CE0B777923FE70EC0018CDA8 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		CE0D3BB423F591C700567A7D /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		CE599A452449B80300B13ED3 /* RestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestError.swift; sourceTree = "<group>"; };
 		CE59BDC323F6882F003513EF /* RestOperationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestOperationsManager.swift; sourceTree = "<group>"; };
 		CE7C5D9A23F5689A001BC697 /* GBKSoftRestManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GBKSoftRestManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7C5D9D23F5689A001BC697 /* GBKSoftRestManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GBKSoftRestManager.h; sourceTree = "<group>"; };
 		CE7C5D9E23F5689A001BC697 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE7C5DA523F569B7001BC697 /* RequestExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestExecutor.swift; sourceTree = "<group>"; };
-		CE7C5DA723F569C3001BC697 /* ErrorInfoResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorInfoResult.swift; sourceTree = "<group>"; };
+		CE7C5DA723F569C3001BC697 /* ErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorInfo.swift; sourceTree = "<group>"; };
 		CE7C5DA923F569C6001BC697 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		CE7C5DAB23F569D0001BC697 /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		CE7C5DAD23F569DC001BC697 /* RestURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestURL.swift; sourceTree = "<group>"; };
@@ -82,7 +84,7 @@
 			children = (
 				CE7C5DBC23F56B01001BC697 /* Extensions */,
 				CE7C5DB723F56A76001BC697 /* Models */,
-				CE7C5DB623F56A6E001BC697 /* Helpers */,
+				CE7C5DB623F56A6E001BC697 /* Entities */,
 				CE7C5DB523F56A5F001BC697 /* Manager */,
 				CE7C5D9D23F5689A001BC697 /* GBKSoftRestManager.h */,
 				CE7C5D9E23F5689A001BC697 /* Info.plist */,
@@ -100,7 +102,7 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
-		CE7C5DB623F56A6E001BC697 /* Helpers */ = {
+		CE7C5DB623F56A6E001BC697 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
 				CE0D3BB423F591C700567A7D /* Configuration.swift */,
@@ -109,16 +111,17 @@
 				CE7C5DAD23F569DC001BC697 /* RestURL.swift */,
 				CE8608082403CFEB009446DB /* PreparedOperation.swift */,
 			);
-			path = Helpers;
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		CE7C5DB723F56A76001BC697 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				CE7C5DB023F569EA001BC697 /* Empty.swift */,
-				CE7C5DA723F569C3001BC697 /* ErrorInfoResult.swift */,
+				CE7C5DA723F569C3001BC697 /* ErrorInfo.swift */,
 				CE7C5DAF23F569EA001BC697 /* Pagination.swift */,
 				CE7C5DB123F569EA001BC697 /* Response.swift */,
+				CE599A452449B80300B13ED3 /* RestError.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -216,7 +219,7 @@
 			files = (
 				CE86080A2403F50E009446DB /* RestOperationsManager.swift in Sources */,
 				CE0B777A23FE70EC0018CDA8 /* UIViewController+Extension.swift in Sources */,
-				CE7C5DA823F569C3001BC697 /* ErrorInfoResult.swift in Sources */,
+				CE7C5DA823F569C3001BC697 /* ErrorInfo.swift in Sources */,
 				CE7C5DAC23F569D0001BC697 /* Request.swift in Sources */,
 				CE8608092403CFEB009446DB /* PreparedOperation.swift in Sources */,
 				CE7C5DB323F569EA001BC697 /* Response.swift in Sources */,
@@ -226,6 +229,7 @@
 				CE7C5DBA23F56AFD001BC697 /* KeyDecodingContainer+Extension.swift in Sources */,
 				CE7C5DA623F569B7001BC697 /* RequestExecutor.swift in Sources */,
 				CE0D3BB523F591C700567A7D /* Configuration.swift in Sources */,
+				CE599A462449B80300B13ED3 /* RestError.swift in Sources */,
 				CE7C5DAA23F569C6001BC697 /* APIError.swift in Sources */,
 				CE7C5DBE23F56BB7001BC697 /* Data+Extension.swift in Sources */,
 				CE7C5DC023F56CC2001BC697 /* RestManager.swift in Sources */,

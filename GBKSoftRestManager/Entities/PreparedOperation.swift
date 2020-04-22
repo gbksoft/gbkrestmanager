@@ -8,30 +8,26 @@
 
 import Foundation
 
-public typealias Callback = () -> Void
+public typealias StateCallback = (RequestState) -> Void
 public typealias CompleteCallback<Model: Decodable> = (Response<Model>) -> Void
 public typealias ErrorCallback = (APIError) -> Void
 
 open class PreparedOperation<Model: Decodable> {
 
-    private(set) var startCallback: Callback?
-    private(set) var endCallback: Callback?
+    private(set) var stateCallback: StateCallback?
     private(set) var completeCallback: CompleteCallback<Model>?
     private(set) var errorCallback: ErrorCallback?
 
-    private var run: (PreparedOperation) -> Void
+    private var execute: (PreparedOperation) -> Void
 
-    internal init(run: @escaping (PreparedOperation) -> Void) {
-        self.run = run
+    internal init(execute: @escaping (PreparedOperation) -> Void) {
+        self.execute = execute
     }
 
-    public var state: RequestState = .started {
+    public var state: RequestState? {
         didSet {
-            switch state {
-            case .started:
-                startCallback?()
-            case .ended:
-                endCallback?()
+            if let state = state {
+                stateCallback?(state)
             }
         }
     }
@@ -52,18 +48,10 @@ open class PreparedOperation<Model: Decodable> {
         }
     }
 
-    public func onStart(_ startCallback: @escaping Callback) -> Self {
-        self.startCallback = startCallback
-        if self.state == .started {
-            startCallback()
-        }
-        return self
-    }
-
-    public func onEnd(_ endCallback: @escaping Callback) -> Self {
-        self.endCallback = endCallback
-        if self.state == .ended {
-            endCallback()
+    public func onStateChanged(_ stateCallback: @escaping StateCallback) -> Self {
+        self.stateCallback = stateCallback
+        if let state = state{
+            stateCallback(state)
         }
         return self
     }
@@ -84,8 +72,8 @@ open class PreparedOperation<Model: Decodable> {
         return self
     }
 
-    public func execute() {
-        self.run(self)
+    public func run() {
+        self.execute(self)
     }
 
 }

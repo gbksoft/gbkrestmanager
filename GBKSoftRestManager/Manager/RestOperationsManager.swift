@@ -46,7 +46,7 @@ open class RestOperationsManager {
             guard let self = self else {
                 return
             }
-            if operation.startCallback == nil {
+            if operation.stateCallback == nil {
                 self.executionHandler?(.started)
             }
             operation.state = .started
@@ -60,7 +60,7 @@ open class RestOperationsManager {
                     }
                     operation.error = error
                 }
-                if operation.endCallback == nil {
+                if operation.stateCallback == nil {
                     self.executionHandler?(.ended)
                 }
                 operation.state = .ended

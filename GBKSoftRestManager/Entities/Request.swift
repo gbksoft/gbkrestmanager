@@ -1,6 +1,6 @@
 //
 //  Request.swift
-//  Aquiline Drones
+//  GBKSoftRestManager
 //
 //  Created by Artem Korzh on 24.12.2019.
 //  Copyright © 2019 Artem Korzh. All rights reserved.
@@ -42,8 +42,8 @@ public struct Request {
         self.media = media
     }
 
-    internal var finalURL: URL {
-        return url.path(baseURL: RestManager.configuration.baseURL, query: query)
+    internal func finalURL(baseURL: String) -> URL {
+        return url.path(baseURL: baseURL, query: query)
     }
 }
 
