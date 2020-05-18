@@ -125,9 +125,8 @@ class RequestExecutor {
             case 401:
                 if let handler = currentConfiguration().unauthorizedHandler {
                     handler(errorInfo)
-                } else {
-                    completion(.failure(.unauthorized(error: errorInfo)))
                 }
+                completion(.failure(.unauthorized(error: errorInfo)))
                 return
             case 400, 402..<500:
                 completion(.failure(.processingError(statusCode: httpResponse.statusCode, error: errorInfo)))

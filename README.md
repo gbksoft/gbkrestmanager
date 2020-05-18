@@ -2,6 +2,12 @@
 
 Реализация базовых запросов согласно структуре API в базовом backend проекте GBKSoft
 
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Overview](#overview)
+- [Usage](#usage)
+- [ToDo](#todo)
+
 ## Requirements 
 - iOS 9.0+
 
@@ -23,7 +29,7 @@ platform :ios, '9.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'GBKSoftRestManager', :git => 'git@gitlab.gbksoft.net:korzh-aa/gbksoftrestmanager.git'
+    pod 'GBKSoftRestManager', :git => 'git@gitlab.gbksoft.net:gbksoft-mobile-department/ios/gbksoftrestmanager.git'
 end
 ```
 
@@ -284,4 +290,5 @@ struct Response<Model>: Decodable where Model: Decodable {
     }
 ```
 
-
+## TODO
+- add opportunity to set custom response and error structure to use library with any custom third party API
