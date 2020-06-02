@@ -9,7 +9,7 @@
 import Foundation
 
 public struct ErrorInfo: Codable {
-    let field: String
-    let message: String
-    let code: Int
+    public let field: String
+    public let message: String
+    public let code: Int
 }

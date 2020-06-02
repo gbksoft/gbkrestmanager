@@ -17,14 +17,8 @@ open class RestManager: RestOperationsDelegate {
 
     private var tasks: [String: [URLSessionTask]] = [:]
 
-    public func operationsManager<T: RestOperationsManager>(from operationsClass: T.Type, in context: UIViewController) -> T {
-        let operations: T = operationsClass.init(contextIdentifier: context.restIdentifier)
-        operations.delegate = self
-        return operations
-    }
-
-    public func operationsManager<T: RestOperationsManager>(from operationsClass: T.Type, in context: UIView) -> T {
-        let operations: T = operationsClass.init(contextIdentifier: context.restIdentifier)
+    public func operationsManager<T: RestOperationsManager>(from operationsClass: T.Type, in context: AnyObject) -> T {
+        let operations: T = operationsClass.init(contextIdentifier: String(describing: context))
         operations.delegate = self
         return operations
     }

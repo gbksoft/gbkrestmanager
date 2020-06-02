@@ -43,11 +43,9 @@ class RequestExecutor {
         urlRequest.httpBody = request.body?.json
 
         let task = urlSession.dataTask(with: urlRequest) { (data, response, error) in
-            #if DEBUG
             DispatchQueue.global().async {
                 self.printResponse(request: request, urlRequest: urlRequest, data: data, response: response, error: error)
             }
-            #endif
             DispatchQueue.main.async {
                 self.processResponse(data: data, response: response, error: error, completion: completion)
             }
@@ -92,11 +90,9 @@ class RequestExecutor {
         body.append("--\(boundary)--\r\n")
 
         let task = urlSession.uploadTask(with: urlRequest, from: body) { (data, response, error) in
-            #if DEBUG
             DispatchQueue.global().async {
                 self.printResponse(request: request, urlRequest: urlRequest, data: data, response: response, error: error)
             }
-            #endif
             DispatchQueue.main.async {
                 self.processResponse(data: data, response: response, error: error, completion: completion)
             }

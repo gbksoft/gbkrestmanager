@@ -9,8 +9,8 @@
 import Foundation
 
 public struct Pagination: Codable {
-    let currentPage: Int
-    let pageCount: Int
-    let perPage: Int
-    let totalCount: Int
+    public let currentPage: Int
+    public let pageCount: Int
+    public let perPage: Int
+    public let totalCount: Int
 }

@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE0B777723FE70BF0018CDA8 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B777623FE70BF0018CDA8 /* UIView+Extension.swift */; };
-		CE0B777A23FE70EC0018CDA8 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B777923FE70EC0018CDA8 /* UIViewController+Extension.swift */; };
 		CE0D3BB523F591C700567A7D /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0D3BB423F591C700567A7D /* Configuration.swift */; };
 		CE599A462449B80300B13ED3 /* RestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE599A452449B80300B13ED3 /* RestError.swift */; };
 		CE7C5D9F23F5689A001BC697 /* GBKSoftRestManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CE7C5D9D23F5689A001BC697 /* GBKSoftRestManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -29,8 +27,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CE0B777623FE70BF0018CDA8 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
-		CE0B777923FE70EC0018CDA8 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		CE0D3BB423F591C700567A7D /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		CE599A452449B80300B13ED3 /* RestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestError.swift; sourceTree = "<group>"; };
 		CE59BDC323F6882F003513EF /* RestOperationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestOperationsManager.swift; sourceTree = "<group>"; };
@@ -132,8 +128,6 @@
 				CE7C5DBD23F56BB7001BC697 /* Data+Extension.swift */,
 				CE7C5DB923F56AFD001BC697 /* Encodable+Extension.swift */,
 				CE7C5DB823F56AFD001BC697 /* KeyDecodingContainer+Extension.swift */,
-				CE0B777623FE70BF0018CDA8 /* UIView+Extension.swift */,
-				CE0B777923FE70EC0018CDA8 /* UIViewController+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -218,12 +212,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE86080A2403F50E009446DB /* RestOperationsManager.swift in Sources */,
-				CE0B777A23FE70EC0018CDA8 /* UIViewController+Extension.swift in Sources */,
 				CE7C5DA823F569C3001BC697 /* ErrorInfo.swift in Sources */,
 				CE7C5DAC23F569D0001BC697 /* Request.swift in Sources */,
 				CE8608092403CFEB009446DB /* PreparedOperation.swift in Sources */,
 				CE7C5DB323F569EA001BC697 /* Response.swift in Sources */,
-				CE0B777723FE70BF0018CDA8 /* UIView+Extension.swift in Sources */,
 				CE7C5DBB23F56AFD001BC697 /* Encodable+Extension.swift in Sources */,
 				CE7C5DB423F569EA001BC697 /* Pagination.swift in Sources */,
 				CE7C5DBA23F56AFD001BC697 /* KeyDecodingContainer+Extension.swift in Sources */,
