@@ -2,7 +2,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "GBKSoftRestManager"
-  spec.version      = "0.0.2"
+  spec.version      = "0.0.4"
   spec.summary      = "Rest manager"
   spec.license      = "MIT"
   spec.author       = { "Artem Korzh" => "korzh.aa@gbksoft.com" }

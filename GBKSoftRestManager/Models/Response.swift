@@ -44,7 +44,7 @@ public struct Response<Model>: Decodable where Model: Decodable {
         message = try? container.decode(.message)
     }
 
-    static var empty: Response<Empty> {
-        return Response<Empty>(result: Optional<Empty>.none, pagination: Optional<Pagination>.none)
+    static var empty: Response<Model> {
+        return Response<Model>(result: Optional<Model>.none, pagination: Optional<Pagination>.none)
     }
 }
