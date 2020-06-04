@@ -115,7 +115,8 @@ class RequestExecutor {
             switch httpResponse.statusCode {
             case 204:
                 if Model.self == Empty.self {
-                    completion(.success(nil))
+                    let result = Response<Model>.empty
+                    completion(.success(result))
                     return
                 }
             case 401:
