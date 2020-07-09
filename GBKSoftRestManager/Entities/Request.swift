@@ -48,16 +48,16 @@ public struct Request {
 }
 
 public enum RequestMedia {
-    case png(UIImage)
-    case jpg(UIImage)
+    case png(UIImage, String?)
+    case jpg(UIImage, String?)
     case mp4(URL)
     case custom(fileURL: URL, contentType: String)
 
     var data: Data? {
         switch self {
-        case .jpg(let image):
+        case .jpg(let image, _):
             return image.jpegData(compressionQuality: 100)
-        case .png(let image):
+        case .png(let image, _):
             return image.pngData()
         case .mp4(let fileURL), .custom(let fileURL, _):
             return try? Data(contentsOf: fileURL)
@@ -66,14 +66,25 @@ public enum RequestMedia {
 
     var contentType: String {
         switch self {
-        case .jpg(_):
+        case .jpg(_, _):
             return "image/jpeg"
-        case .png(_):
+        case .png(_, _):
             return "image/png"
         case .mp4(_):
             return "video/mp4"
         case .custom(_, let contentType):
             return contentType
+        }
+    }
+
+    var name: String {
+        switch self {
+        case .jpg(_, let filename):
+            return filename ?? "image.jpg"
+        case .png(_, let filename):
+            return filename ?? "image.png"
+        case .mp4(let fileURL), .custom(let fileURL, _):
+            return fileURL.lastPathComponent
         }
     }
 }

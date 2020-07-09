@@ -24,6 +24,7 @@
 		CE7C5DC023F56CC2001BC697 /* RestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C5DBF23F56CC2001BC697 /* RestManager.swift */; };
 		CE8608092403CFEB009446DB /* PreparedOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8608082403CFEB009446DB /* PreparedOperation.swift */; };
 		CE86080A2403F50E009446DB /* RestOperationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59BDC323F6882F003513EF /* RestOperationsManager.swift */; };
+		CE91CE3224B74B9D00EF4F62 /* MimeTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91CE3124B74B9D00EF4F62 /* MimeTypeExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		CE7C5DBD23F56BB7001BC697 /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		CE7C5DBF23F56CC2001BC697 /* RestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestManager.swift; sourceTree = "<group>"; };
 		CE8608082403CFEB009446DB /* PreparedOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreparedOperation.swift; sourceTree = "<group>"; };
+		CE91CE3124B74B9D00EF4F62 /* MimeTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 				CE7C5DBD23F56BB7001BC697 /* Data+Extension.swift */,
 				CE7C5DB923F56AFD001BC697 /* Encodable+Extension.swift */,
 				CE7C5DB823F56AFD001BC697 /* KeyDecodingContainer+Extension.swift */,
+				CE91CE3124B74B9D00EF4F62 /* MimeTypeExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				CE7C5DAC23F569D0001BC697 /* Request.swift in Sources */,
 				CE8608092403CFEB009446DB /* PreparedOperation.swift in Sources */,
 				CE7C5DB323F569EA001BC697 /* Response.swift in Sources */,
+				CE91CE3224B74B9D00EF4F62 /* MimeTypeExtensions.swift in Sources */,
 				CE7C5DBB23F56AFD001BC697 /* Encodable+Extension.swift in Sources */,
 				CE7C5DB423F569EA001BC697 /* Pagination.swift in Sources */,
 				CE7C5DBA23F56AFD001BC697 /* KeyDecodingContainer+Extension.swift in Sources */,

@@ -80,7 +80,7 @@ class RequestExecutor {
                     continue
                 }
                 body.append("--\(boundary)\r\n")
-                body.append("Content-Disposition: form-data; name=\"\(key)\"; filename=\"image.jpg\"\r\n")
+                body.append("Content-Disposition: form-data; name=\"\(key)\"; filename=\"\(file.name)\"\r\n")
                 body.append("Content-Type: \(file.contentType)\r\n\r\n")
                 body.append(data)
                 body.append("\r\n")
