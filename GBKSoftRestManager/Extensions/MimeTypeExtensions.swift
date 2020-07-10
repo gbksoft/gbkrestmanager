@@ -124,26 +124,26 @@ internal func MimeType(ext: String?) -> String {
     return DEFAULT_MIME_TYPE
 }
 
-extension NSURL {
-    public func mimeType() -> String {
+public extension NSURL {
+    var mimeType: String {
         return MimeType(ext: self.pathExtension)
     }
 }
 
-extension URL {
-    public func mimeType() -> String {
-        return (self as NSURL).mimeType()
+public extension URL {
+    var mimeType: String {
+        return (self as NSURL).mimeType
     }
 }
 
-extension NSString {
-    public func mimeType() -> String {
+public extension NSString {
+    var mimeType: String {
         return MimeType(ext: self.pathExtension)
     }
 }
 
-extension String {
-    public func mimeType() -> String {
-        return (self as NSString).mimeType()
+public extension String {
+    var mimeType: String {
+        return (self as NSString).mimeType
     }
 }
