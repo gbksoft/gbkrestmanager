@@ -46,6 +46,11 @@ class RequestExecutor {
             DispatchQueue.global().async {
                 self.printResponse(request: request, urlRequest: urlRequest, data: data, response: response, error: error)
             }
+            let headers: [AnyHashable: Any] = (response as? HTTPURLResponse)?.allHeaderFields ?? [:]
+            guard self.currentConfiguration().headerValidation(headers) else {
+                completion(.failure(.headerValidationFailed))
+                return
+            }
             DispatchQueue.main.async {
                 self.processResponse(data: data, response: response, error: error, completion: completion)
             }
@@ -168,8 +173,10 @@ class RequestExecutor {
         debugPrint("====================RESPONSE=====================")
         if let httpResponse = response as? HTTPURLResponse {
             debugPrint("Status code: \(httpResponse.statusCode)")
+            debugPrint("Headers:", httpResponse.allHeaderFields)
         } else {
             debugPrint("Status code: <undefined>")
+            debugPrint("Headers: <undefined>")
         }
         if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) {
             debugPrint("Response JSON:", json)

@@ -29,7 +29,7 @@ platform :ios, '9.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'GBKSoftRestManager', :git => 'git@gitlab.gbksoft.net:gbksoft-mobile-department/ios/gbksoftrestmanager.git'
+pod 'GBKSoftRestManager', :git => 'git@gitlab.gbksoft.net:gbksoft-mobile-department/ios/gbksoftrestmanager.git', :tag => '0.0.7'
 end
 ```
 
@@ -79,6 +79,14 @@ RestManager.shared.configuration.setDefaultHeaders([
 // update/set one default header for all requests
 // except Accept and Content-Type that will be set automatically 
 RestManager.shared.configuration.setDefaultHeader(header: "Accept-Language", value: "en")
+
+// set headers validation, i.e. api version comparement
+// headers: [AnyHashable: Any]
+// if return false .onError handler will be called with .headerValidationFailed error
+// default implementation always return true
+RestManager.shared.configuration.setHeaderValidation { (headers) -> Bool in
+    return true 
+})
 ```
 ### Основные классы 
 
@@ -163,6 +171,7 @@ public enum APIError: Error {
     case emptyResponse                                          // if no body of request returned and code is not 204
     case serverError(statusCode: Int, error: RestError?)        // if server returns 50_ code
     case processingError(statusCode: Int, error: RestError?)    // if server failed to process request data. most of time RestError will contain non empty result: [ErrorInfo] 
+    case headerValidationFailed                                 // if header validation return false
 }
 ```
 

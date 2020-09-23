@@ -15,12 +15,14 @@ enum ExecutingState {
 
 public typealias AuthorisationHeaderSource = () -> String
 public typealias UnauthorizedHandler = (RestError?) -> Void
+public typealias HeaderValidation = ([AnyHashable: Any]) -> Bool
 
 open class RestManagerConfiguration {
     private(set) var authorizationHeaderSource: AuthorisationHeaderSource = { return "" }
     private(set) var baseURL: String = ""
     private(set) var unauthorizedHandler: UnauthorizedHandler?
     private(set) var defaultHeaders: [String: String] = [:]
+    private(set) var headerValidation: HeaderValidation = {_ in true }
 
     public func setAuthorisationHeaderSource(_ source: @escaping AuthorisationHeaderSource) {
         self.authorizationHeaderSource = source
@@ -40,5 +42,9 @@ open class RestManagerConfiguration {
 
     public func setDefaultHeader(header: String, value: String) {
         self.defaultHeaders[header] = value
+    }
+
+    public func setHeaderValidation(_ validation: @escaping HeaderValidation) {
+        self.headerValidation = validation
     }
 }

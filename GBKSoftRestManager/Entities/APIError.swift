@@ -15,4 +15,5 @@ public enum APIError: Error {
     case emptyResponse
     case serverError(statusCode: Int, error: RestError?)
     case processingError(statusCode: Int, error: RestError?)
+    case headerValidationFailed
 }
