@@ -16,6 +16,7 @@ enum ExecutingState {
 public typealias AuthorisationHeaderSource = () -> String
 public typealias UnauthorizedHandler = (RestError?) -> Void
 public typealias HeaderValidation = ([AnyHashable: Any]) -> Bool
+public typealias TokenRefresher = ((Bool) -> Void) -> Void
 
 open class RestManagerConfiguration {
     private(set) var authorizationHeaderSource: AuthorisationHeaderSource = { return "" }
@@ -23,6 +24,7 @@ open class RestManagerConfiguration {
     private(set) var unauthorizedHandler: UnauthorizedHandler?
     private(set) var defaultHeaders: [String: String] = [:]
     private(set) var headerValidation: HeaderValidation = {_ in true }
+    private(set) var tokenRefresher: TokenRefresher = { $0(false) }
 
     public func setAuthorisationHeaderSource(_ source: @escaping AuthorisationHeaderSource) {
         self.authorizationHeaderSource = source
@@ -46,5 +48,9 @@ open class RestManagerConfiguration {
 
     public func setHeaderValidation(_ validation: @escaping HeaderValidation) {
         self.headerValidation = validation
+    }
+
+    public func setTokenRefresher(_ tokenRefresher: @escaping TokenRefresher) {
+        self.tokenRefresher = tokenRefresher
     }
 }

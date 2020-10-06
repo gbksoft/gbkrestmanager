@@ -25,7 +25,22 @@ open class RestManager: RestOperationsDelegate {
 
     internal func execute<Model>(model: Model.Type, request: Request, identifier: String, completion: @escaping RequestCompletion<Model>) {
 
-        let task = executor.execute(request: request, completion: completion)
+        let preCompletion: RequestCompletion<Model> = { result in
+            if case .failure(let error) = result,
+               case .unauthorized(_) = error {
+                self.configuration.tokenRefresher { refreshed in
+                    if refreshed {
+                        self.execute(model: model, request: request, identifier: identifier, completion: completion)
+                        return
+                    }
+                    completion(result)
+                }
+                return
+            }
+            completion(result)
+        }
+
+        let task = executor.execute(request: request, completion: preCompletion)
 
         if var existingTasks = tasks[identifier] {
             existingTasks.append(task)
