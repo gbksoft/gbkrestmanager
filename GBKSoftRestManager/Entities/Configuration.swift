@@ -16,7 +16,7 @@ enum ExecutingState {
 public typealias AuthorisationHeaderSource = () -> String
 public typealias UnauthorizedHandler = (RestError?) -> Void
 public typealias HeaderValidation = ([AnyHashable: Any]) -> Bool
-public typealias TokenRefresher = ((Bool) -> Void) -> Void
+public typealias TokenRefresher = (@escaping (Bool) -> Void) -> Void
 
 open class RestManagerConfiguration {
     private(set) var authorizationHeaderSource: AuthorisationHeaderSource = { return "" }
