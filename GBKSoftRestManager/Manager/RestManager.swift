@@ -27,10 +27,14 @@ open class RestManager: RestOperationsDelegate {
 
         let preCompletion: RequestCompletion<Model> = { result in
             if case .failure(let error) = result,
-               case .unauthorized(_) = error {
+               case .unauthorized(let errorInfo) = error {
                 self.configuration.tokenRefresher { refreshed in
                     if refreshed {
                         self.execute(model: model, request: request, identifier: identifier, completion: completion)
+                        return
+                    }
+                    if let handler = self.configuration.unauthorizedHandler {
+                        handler(errorInfo)
                         return
                     }
                     completion(result)
