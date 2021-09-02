@@ -52,15 +52,18 @@ public enum RequestMedia {
     case jpg(UIImage, String?)
     case mp4(URL)
     case custom(fileURL: URL, contentType: String)
+    case customData(_ data: Data, fileName: String, contentType: String)
 
     var data: Data? {
         switch self {
         case .jpg(let image, _):
-            return image.jpegData(compressionQuality: 100)
+            return image.jpegData(compressionQuality: 1)
         case .png(let image, _):
             return image.pngData()
         case .mp4(let fileURL), .custom(let fileURL, _):
             return try? Data(contentsOf: fileURL)
+        case .customData(let data, _, _):
+            return data
         }
     }
 
@@ -72,7 +75,7 @@ public enum RequestMedia {
             return "image/png"
         case .mp4(_):
             return "video/mp4"
-        case .custom(_, let contentType):
+        case .custom(_, let contentType), .customData(_, _, let contentType):
             return contentType
         }
     }
@@ -85,6 +88,8 @@ public enum RequestMedia {
             return filename ?? "image.png"
         case .mp4(let fileURL), .custom(let fileURL, _):
             return fileURL.lastPathComponent
+        case .customData(_, let fileName, _):
+            return fileName
         }
     }
 }
