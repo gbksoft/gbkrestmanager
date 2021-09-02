@@ -13,7 +13,7 @@ open class Endpoint {
     let endpoint: String
 
     public init(_ endpoint: String) {
-        self.endpoint = endpoint
+        self.endpoint = endpoint.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
     }
 
     internal func path(baseURL: String, query: [String: Any]? = nil) -> URL {

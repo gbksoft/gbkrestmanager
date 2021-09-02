@@ -8,7 +8,8 @@
 
 import Foundation
 
-typealias RequestCompletion<Model> = (Result<Response<Model>?, APIError>) -> Void where Model: Decodable
+typealias RequestCompletion<Model, Response, RestError> = (Result<Response, APIError<RestError>>) -> Void
+    where Model: Decodable, Response: BaseRestResponse<Model>, RestError: BaseRestErrorProtocol
 
 class RequestExecutor {
 
@@ -20,7 +21,7 @@ class RequestExecutor {
 
     private let urlSession = URLSession(configuration: .default)
 
-    func execute<Model>(request: Request, completion: @escaping RequestCompletion<Model>) -> URLSessionTask where Model: Decodable {
+    func execute<Model, Response, RestError>(request: Request, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
         if request.media != nil {
             return uploadTask(request: request, completion: completion)
         } else {
@@ -29,7 +30,7 @@ class RequestExecutor {
 
     }
 
-    private func defaultTask<Model>(request: Request, completion: @escaping RequestCompletion<Model>) -> URLSessionTask where Model: Decodable {
+    private func defaultTask<Model, Response, RestError>(request: Request, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
         var urlRequest = URLRequest(url: request.finalURL(baseURL: currentConfiguration().baseURL))
         urlRequest.httpMethod = request.method.rawValue
         let customHeaders =  currentConfiguration().defaultHeaders
@@ -58,7 +59,7 @@ class RequestExecutor {
         return task
     }
 
-    private func uploadTask<Model>(request: Request, completion: @escaping RequestCompletion<Model>) -> URLSessionTask where Model: Decodable {
+    private func uploadTask<Model, Response, RestError>(request: Request, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
         var urlRequest = URLRequest(url: request.finalURL(baseURL: currentConfiguration().baseURL))
         urlRequest.httpMethod = request.method.rawValue
         let customHeaders =  currentConfiguration().defaultHeaders
@@ -105,7 +106,7 @@ class RequestExecutor {
         return task
     }
 
-    private func processResponse<Model>(data: Data?, response: URLResponse?, error: Error?, completion: RequestCompletion<Model>) where Model: Decodable {
+    private func processResponse<Model, Response, RestError>(data: Data?, response: URLResponse?, error: Error?, completion: RequestCompletion<Model, Response, RestError>) where Model: Decodable, Response: BaseRestResponse<Model> {
 
         if let error = error {
             completion(.failure(.executionError(error: error)))
@@ -120,8 +121,8 @@ class RequestExecutor {
             switch httpResponse.statusCode {
             case 204:
                 if Model.self == Empty.self {
-                    let result = Response<Model>.empty
-                    completion(.success(result))
+                    let result = Response.empty
+                    completion(.success(result as! Response))
                     return
                 }
             case 401:
@@ -144,7 +145,7 @@ class RequestExecutor {
         }
 
         do {
-            let response = try JSONDecoder().decode(Response<Model>.self, from: data)
+            let response = try JSONDecoder().decode(Response.self, from: data)
             completion(.success(response))
         } catch let error {
             debugPrint(error)

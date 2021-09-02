@@ -14,7 +14,7 @@ enum ExecutingState {
 }
 
 public typealias AuthorisationHeaderSource = () -> String
-public typealias UnauthorizedHandler = (RestError?) -> Void
+public typealias UnauthorizedHandler = (Any?) -> Void
 public typealias HeaderValidation = ([AnyHashable: Any]) -> Bool
 public typealias TokenRefresher = (@escaping (Bool) -> Void) -> Void
 
@@ -30,8 +30,10 @@ open class RestManagerConfiguration {
         self.authorizationHeaderSource = source
     }
 
-    public func setUnauthorizedHandler(_ handler: @escaping UnauthorizedHandler) {
-        self.unauthorizedHandler = handler
+    public func setUnauthorizedHandler<RestError: BaseRestErrorProtocol>(_ handler: @escaping (RestError?) -> Void) {
+        self.unauthorizedHandler = { errorInfo in
+            handler(errorInfo as? RestError)
+        }
     }
 
     public func setBaseURL(_ url: String) {

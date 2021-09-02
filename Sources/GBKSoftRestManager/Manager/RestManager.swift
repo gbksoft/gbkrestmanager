@@ -13,24 +13,26 @@ open class RestManager: RestOperationsDelegate {
     public private(set) var configuration: RestManagerConfiguration = RestManagerConfiguration()
     public static let shared = RestManager()
 
+    public init() {}
+
     private lazy var executor = RequestExecutor(configuration: { self.configuration })
 
     private var tasks: [String: [URLSessionTask]] = [:]
 
-    public func operationsManager<T: RestOperationsManager>(from operationsClass: T.Type, in context: AnyObject) -> T {
+    public func operationsManager<T, RestError>(from operationsClass: T.Type, in context: AnyObject) -> T where T: RestOperationsManager<RestError> {
         let operations: T = operationsClass.init(contextIdentifier: String(describing: context))
         operations.delegate = self
         return operations
     }
 
-    internal func execute<Model>(model: Model.Type, request: Request, identifier: String, completion: @escaping RequestCompletion<Model>) {
+    internal func execute<Model, Response, RestError>(model: Response.Type, errorType: RestError.Type, request: Request, identifier: String, completion: @escaping RequestCompletion<Model, Response, RestError>) {
 
-        let preCompletion: RequestCompletion<Model> = { result in
+        let preCompletion: RequestCompletion<Model, Response, RestError> = { result in
             if case .failure(let error) = result,
                case .unauthorized(let errorInfo) = error {
                 self.configuration.tokenRefresher { refreshed in
                     if refreshed {
-                        self.execute(model: model, request: request, identifier: identifier, completion: completion)
+                        self.execute(model: model, errorType: errorType, request: request, identifier: identifier, completion: completion)
                         return
                     }
                     if let handler = self.configuration.unauthorizedHandler {

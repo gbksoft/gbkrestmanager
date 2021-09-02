@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum APIError: Error {
+public enum APIError<RestError>: Error where RestError: BaseRestErrorProtocol {
     case unauthorized(error: RestError?)
     case executionError(error: Error)
     case wrongResponseFormat

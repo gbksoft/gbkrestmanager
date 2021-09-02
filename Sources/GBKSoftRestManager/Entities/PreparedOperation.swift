@@ -9,14 +9,14 @@
 import Foundation
 
 public typealias StateCallback = (RequestState) -> Void
-public typealias CompleteCallback<Model: Decodable> = (Response<Model>) -> Void
-public typealias ErrorCallback = (APIError) -> Void
+public typealias CompleteCallback<Model: Decodable, Response: BaseRestResponse<Model>> = (Response) -> Void
+public typealias ErrorCallback<RestError> = (APIError<RestError>) -> Void where RestError: BaseRestErrorProtocol
 
-open class PreparedOperation<Model: Decodable> {
+open class PreparedOperation<Model: Decodable, Response: BaseRestResponse<Model>, RestError: BaseRestErrorProtocol> {
 
     private(set) var stateCallback: StateCallback?
-    private(set) var completeCallback: CompleteCallback<Model>?
-    private(set) var errorCallback: ErrorCallback?
+    private(set) var completeCallback: CompleteCallback<Model, Response>?
+    private(set) var errorCallback: ErrorCallback<RestError>?
 
     private var execute: (PreparedOperation) -> Void
 
@@ -32,7 +32,7 @@ open class PreparedOperation<Model: Decodable> {
         }
     }
 
-    public var response: Response<Model>? {
+    public var response: Response? {
         didSet {
             if let response = response {
                 completeCallback?(response)
@@ -40,7 +40,7 @@ open class PreparedOperation<Model: Decodable> {
         }
     }
 
-    public var error: APIError? {
+    public var error: APIError<RestError>? {
         didSet {
             if let error = error {
                 errorCallback?(error)
@@ -56,7 +56,7 @@ open class PreparedOperation<Model: Decodable> {
         return self
     }
 
-    public func onComplete(_ completeCallback: @escaping CompleteCallback<Model>) -> Self {
+    public func onComplete(_ completeCallback: @escaping CompleteCallback<Model, Response>) -> Self {
         self.completeCallback = completeCallback
         if let response = self.response {
             completeCallback(response)
@@ -64,7 +64,7 @@ open class PreparedOperation<Model: Decodable> {
         return self
     }
 
-    public func onError(_ errorCallback: @escaping ErrorCallback) -> Self {
+    public func onError(_ errorCallback: @escaping ErrorCallback<RestError>) -> Self {
         self.errorCallback = errorCallback
         if let error = self.error {
             errorCallback(error)

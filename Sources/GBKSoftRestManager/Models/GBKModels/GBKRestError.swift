@@ -1,5 +1,5 @@
 //
-//  RestError.swift
+//  GBKRestError.swift
 //  GBKSoftRestManager
 //
 //  Created by Artem Korzh on 17.04.2020.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct RestError: Codable {
+public struct GBKRestError: BaseRestErrorProtocol {
     public let code: Int
     public let status: Status
     public let message: String?
