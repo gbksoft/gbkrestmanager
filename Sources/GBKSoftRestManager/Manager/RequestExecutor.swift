@@ -11,7 +11,9 @@ import Foundation
 typealias RequestCompletion<Model, Response, RestError> = (Result<Response, APIError<RestError>>) -> Void
     where Model: Decodable, Response: BaseRestResponse<Model>, RestError: BaseRestErrorProtocol
 
-class RequestExecutor {
+class RequestExecutor: NSObject {
+
+    private var progressHandlers = [Int: ProgressCallback]()
 
     public var currentConfiguration: () -> RestManagerConfiguration
 
@@ -19,15 +21,14 @@ class RequestExecutor {
         self.currentConfiguration = configuration
     }
 
-    private let urlSession = URLSession(configuration: .default)
+    private lazy var urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
-    func execute<Model, Response, RestError>(request: Request, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
+    func execute<Model, Response, RestError>(request: Request, progress: @escaping ProgressCallback, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
         if request.media != nil {
-            return uploadTask(request: request, completion: completion)
+            return uploadTask(request: request, progress: progress, completion: completion)
         } else {
             return defaultTask(request: request, completion: completion)
         }
-
     }
 
     private func defaultTask<Model, Response, RestError>(request: Request, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
@@ -59,7 +60,7 @@ class RequestExecutor {
         return task
     }
 
-    private func uploadTask<Model, Response, RestError>(request: Request, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
+    private func uploadTask<Model, Response, RestError>(request: Request, progress: @escaping ProgressCallback, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
         var urlRequest = URLRequest(url: request.finalURL(baseURL: currentConfiguration().baseURL))
         urlRequest.httpMethod = request.method.rawValue
         let customHeaders =  currentConfiguration().defaultHeaders
@@ -103,6 +104,9 @@ class RequestExecutor {
                 self.processResponse(data: data, response: response, error: error, completion: completion)
             }
         }
+
+        progressHandlers[task.taskIdentifier] = progress
+
         return task
     }
 
@@ -189,4 +193,14 @@ class RequestExecutor {
         debugPrint("================================================")
     }
 
+}
+
+// MARK: - URLSessionTaskDelegate
+
+extension RequestExecutor: URLSessionTaskDelegate {
+
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        let progress = Double(totalBytesSent) / Double(totalBytesExpectedToSend)
+        progressHandlers[task.taskIdentifier]?(progress)
+    }
 }

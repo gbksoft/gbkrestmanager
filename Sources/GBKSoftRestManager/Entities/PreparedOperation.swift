@@ -9,12 +9,14 @@
 import Foundation
 
 public typealias StateCallback = (RequestState) -> Void
+public typealias ProgressCallback = (Double) -> Void
 public typealias CompleteCallback<Model: Decodable, Response: BaseRestResponse<Model>> = (Response) -> Void
 public typealias ErrorCallback<RestError> = (APIError<RestError>) -> Void where RestError: BaseRestErrorProtocol
 
 open class PreparedOperation<Model: Decodable, Response: BaseRestResponse<Model>, RestError: BaseRestErrorProtocol> {
 
     private(set) var stateCallback: StateCallback?
+    private(set) var uploadProgressCallback: ProgressCallback?
     private(set) var completeCallback: CompleteCallback<Model, Response>?
     private(set) var errorCallback: ErrorCallback<RestError>?
 
@@ -28,6 +30,14 @@ open class PreparedOperation<Model: Decodable, Response: BaseRestResponse<Model>
         didSet {
             if let state = state {
                 stateCallback?(state)
+            }
+        }
+    }
+
+    public var uploadProgress: Double? {
+        didSet {
+            if let uploadProgress = uploadProgress {
+                uploadProgressCallback?(uploadProgress)
             }
         }
     }
@@ -50,8 +60,16 @@ open class PreparedOperation<Model: Decodable, Response: BaseRestResponse<Model>
 
     public func onStateChanged(_ stateCallback: @escaping StateCallback) -> Self {
         self.stateCallback = stateCallback
-        if let state = state{
+        if let state = state {
             stateCallback(state)
+        }
+        return self
+    }
+
+    public func onUploadProgressChanged(_ uploadProgressCallback: @escaping ProgressCallback) -> Self {
+        self.uploadProgressCallback = uploadProgressCallback
+        if let uploadProgress = uploadProgress {
+            uploadProgressCallback(uploadProgress)
         }
         return self
     }
