@@ -25,14 +25,14 @@ open class RestManager: RestOperationsDelegate {
         return operations
     }
 
-    internal func execute<Model, Response, RestError>(model: Response.Type, errorType: RestError.Type, request: Request, identifier: String, completion: @escaping RequestCompletion<Model, Response, RestError>) {
+    internal func execute<Model, Response, RestError>(model: Response.Type, errorType: RestError.Type, request: Request, identifier: String, progress: @escaping ProgressCallback, completion: @escaping RequestCompletion<Model, Response, RestError>) {
 
         let preCompletion: RequestCompletion<Model, Response, RestError> = { result in
             if case .failure(let error) = result,
                case .unauthorized(let errorInfo) = error {
                 self.configuration.tokenRefresher { refreshed in
                     if refreshed {
-                        self.execute(model: model, errorType: errorType, request: request, identifier: identifier, completion: completion)
+                        self.execute(model: model, errorType: errorType, request: request, identifier: identifier, progress: progress, completion: completion)
                         return
                     }
                     if let handler = self.configuration.unauthorizedHandler {
@@ -46,7 +46,7 @@ open class RestManager: RestOperationsDelegate {
             completion(result)
         }
 
-        let task = executor.execute(request: request, completion: preCompletion)
+        let task = executor.execute(request: request, progress: progress, completion: preCompletion)
 
         if var existingTasks = tasks[identifier] {
             existingTasks.append(task)
@@ -68,6 +68,4 @@ open class RestManager: RestOperationsDelegate {
             cancelAllRequests(identifier: key)
         }
     }
-
-
 }

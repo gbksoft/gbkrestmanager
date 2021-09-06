@@ -23,7 +23,7 @@ https://gitlab.gbksoft.net/gbksoft-mobile-department/ios/gbksoftrestmanager
 ### CocoaPods
 В Podfile добавить
 ```
-pod 'GBKSoftRestManager', :git => 'git@gitlab.gbksoft.net:gbksoft-mobile-department/ios/gbksoftrestmanager.git', :tag => '0.1.0'
+pod 'GBKSoftRestManager', :git => 'git@gitlab.gbksoft.net:gbksoft-mobile-department/ios/gbksoftrestmanager.git', :tag => '0.1.1'
 ```
 и выполнить `pod install` в корне проекта 
 
@@ -362,6 +362,8 @@ func updateAvatar() {
 	        if let avatar = response.result {
 	            print(avatar)
 	        }
+        }.onUploadProgressChanged { (progress)
+            showUploadProgress(progress)
 	    }.onStateChanged { (state) in        // local state handler. i.e. to toggle loading indicator
 	        switch state {
 	        case .started:
@@ -369,8 +371,6 @@ func updateAvatar() {
 	        case .ended:
 	            loader.hide()
 	        }
-	    }.onEnd {                                // local state handler 
-	        updateUserAvatar()
 	    }.onError({ (error) in                   // local error handler 
 	        print(error)
 	    }).run()

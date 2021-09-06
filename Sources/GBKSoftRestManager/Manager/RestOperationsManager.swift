@@ -9,7 +9,7 @@
 import Foundation
 
 protocol RestOperationsDelegate: AnyObject {
-    func execute<Model, Response, RestError>(model: Response.Type, errorType: RestError.Type, request: Request, identifier: String, completion: @escaping RequestCompletion<Model, Response, RestError>)
+    func execute<Model, Response, RestError>(model: Response.Type, errorType: RestError.Type, request: Request, identifier: String, progress: @escaping ProgressCallback, completion: @escaping RequestCompletion<Model, Response, RestError>)
     func cancelAllRequests(identifier: String)
 }
 
@@ -50,7 +50,9 @@ open class RestOperationsManager<RestError: BaseRestErrorProtocol> {
                 self.executionHandler?(.started)
             }
             operation.state = .started
-            self.delegate?.execute(model: Response.self, errorType: RestError.self, request: request, identifier: self.contextIdentifier) { (result) in
+            self.delegate?.execute(model: Response.self, errorType: RestError.self, request: request, identifier: self.contextIdentifier, progress: { uploadProgress in
+                operation.uploadProgress = uploadProgress
+            }, completion: { result in
                 switch result {
                 case .success(let response) :
                     operation.response = response
@@ -64,7 +66,7 @@ open class RestOperationsManager<RestError: BaseRestErrorProtocol> {
                     self.executionHandler?(.ended)
                 }
                 operation.state = .ended
-            }
+            })
         }
 
         return preparedOperation
