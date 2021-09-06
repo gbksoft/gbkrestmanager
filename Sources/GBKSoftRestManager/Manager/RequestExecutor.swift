@@ -21,7 +21,7 @@ class RequestExecutor: NSObject {
         self.currentConfiguration = configuration
     }
 
-    private lazy var urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+    private lazy var urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: .main)
 
     func execute<Model, Response, RestError>(request: Request, progress: @escaping ProgressCallback, completion: @escaping RequestCompletion<Model, Response, RestError>) -> URLSessionTask {
         if request.media != nil {
